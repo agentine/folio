@@ -1,2 +1,43 @@
-// Replaces exceljs — Excel workbook manager for Node.js with full styling support. Read/write .xlsx and .csv with rich formatting (fonts, borders, fills, alignment), data validation, conditional formatting, images, tables, streaming. TypeScript-first, zero deps, ESM+CJS (~4.4M weekly npm downloads, 2,264 dependents, unmaintained 2.5+ years, 784 open issues)
-export {};
+export {
+  Workbook,
+  Worksheet,
+  Row,
+  Cell,
+  Column,
+  ValueType,
+  parseAddress,
+  formatAddress,
+  colToLetter,
+  letterToCol,
+  parseRange,
+} from './model/index.js';
+
+export type {
+  WorksheetOptions,
+  Style,
+  Font,
+  Fill,
+  PatternFill,
+  GradientFill,
+  Border,
+  BorderStyle,
+  Alignment,
+  Color,
+  CellValue,
+  FormulaValue,
+  RichTextValue,
+  HyperlinkValue,
+  ErrorValue,
+  DataValidation,
+  SheetView,
+  PageSetup,
+  ColumnDefinition,
+  SheetState,
+  RichTextRun,
+} from './model/index.js';
+
+export { ZipReader, ZipWriter } from './zip/index.js';
+export type { ZipEntry } from './zip/index.js';
+
+export { parseSax, XmlElement, el, xmlDeclaration } from './xml/index.js';
+export type { XmlAttribute, SaxHandler } from './xml/index.js';
