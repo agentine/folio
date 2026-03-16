@@ -1,5 +1,7 @@
+import type { Writable } from 'node:stream';
 import { Worksheet } from './worksheet.js';
 import type { WorksheetOptions } from './worksheet.js';
+import { writeXlsxFile, writeXlsxBuffer, writeXlsxStream } from '../xlsx-writer.js';
 
 export class Workbook {
   creator = '';
@@ -41,18 +43,20 @@ export class Workbook {
     }
   }
 
-  // Stubs for Phase 2 I/O
-  get xlsx(): { readFile: (filename: string) => Promise<void>; writeFile: (filename: string) => Promise<void>; writeBuffer: () => Promise<Buffer> } {
+  get xlsx(): {
+    readFile: (filename: string) => Promise<void>;
+    writeFile: (filename: string) => Promise<void>;
+    writeBuffer: () => Promise<Buffer>;
+    write: (stream: Writable) => Promise<void>;
+  } {
+    const wb = this;
     return {
       readFile: async (_filename: string) => {
         throw new Error('XLSX reading not yet implemented');
       },
-      writeFile: async (_filename: string) => {
-        throw new Error('XLSX writing not yet implemented');
-      },
-      writeBuffer: async () => {
-        throw new Error('XLSX writing not yet implemented');
-      },
+      writeFile: (filename: string) => writeXlsxFile(wb, filename),
+      writeBuffer: () => writeXlsxBuffer(wb),
+      write: (stream: Writable) => writeXlsxStream(wb, stream),
     };
   }
 
