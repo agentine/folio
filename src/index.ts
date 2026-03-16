@@ -49,3 +49,4 @@ export { SharedStrings } from './shared-strings.js';
 export type { SharedStringItem } from './shared-strings.js';
 
 export { writeXlsx, writeXlsxFile, writeXlsxBuffer } from './xlsx-writer.js';
+export { readXlsx, readXlsxFile } from './xlsx-reader.js';

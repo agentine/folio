@@ -2,6 +2,7 @@ import type { Writable } from 'node:stream';
 import { Worksheet } from './worksheet.js';
 import type { WorksheetOptions } from './worksheet.js';
 import { writeXlsxFile, writeXlsxBuffer, writeXlsxStream } from '../xlsx-writer.js';
+import { readXlsxFile } from '../xlsx-reader.js';
 
 export class Workbook {
   creator = '';
@@ -51,8 +52,19 @@ export class Workbook {
   } {
     const wb = this;
     return {
-      readFile: async (_filename: string) => {
-        throw new Error('XLSX reading not yet implemented');
+      readFile: async (filename: string) => {
+        const loaded = await readXlsxFile(filename);
+        // Copy loaded workbook data into this instance
+        wb._worksheets.clear();
+        wb._nextSheetId = 1;
+        for (const sheet of loaded.worksheets) {
+          wb._worksheets.set(sheet.id, sheet);
+          if (sheet.id >= wb._nextSheetId) wb._nextSheetId = sheet.id + 1;
+        }
+        wb.creator = loaded.creator;
+        wb.lastModifiedBy = loaded.lastModifiedBy;
+        wb.created = loaded.created;
+        wb.modified = loaded.modified;
       },
       writeFile: (filename: string) => writeXlsxFile(wb, filename),
       writeBuffer: () => writeXlsxBuffer(wb),
