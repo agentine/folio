@@ -41,3 +41,6 @@ export type { ZipEntry } from './zip/index.js';
 
 export { parseSax, XmlElement, el, xmlDeclaration } from './xml/index.js';
 export type { XmlAttribute, SaxHandler } from './xml/index.js';
+
+export { StyleRegistry, isDateNumFmt, BUILTIN_NUMFMTS } from './style.js';
+export type { CellXf } from './style.js';
