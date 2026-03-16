@@ -55,7 +55,10 @@ export class ZipReader {
       const commentLen = this.buf.readUInt16LE(cdOffset + 32);
       const localHeaderOffset = this.buf.readUInt32LE(cdOffset + 42);
 
-      const filename = this.buf.toString('utf8', cdOffset + 46, cdOffset + 46 + filenameLen);
+      const rawFilename = this.buf.toString('utf8', cdOffset + 46, cdOffset + 46 + filenameLen);
+      const filename = rawFilename.replace(/\\/g, '/');
+
+      ZipReader.validateFilename(filename);
 
       this.entries.push({
         filename,
@@ -67,6 +70,18 @@ export class ZipReader {
       });
 
       cdOffset += 46 + filenameLen + extraLen + commentLen;
+    }
+  }
+
+  private static validateFilename(filename: string): void {
+    if (filename.startsWith('/')) {
+      throw new Error(`Unsafe ZIP entry: absolute path "${filename}"`);
+    }
+    const segments = filename.split('/');
+    for (const seg of segments) {
+      if (seg === '..') {
+        throw new Error(`Unsafe ZIP entry: path traversal "${filename}"`);
+      }
     }
   }
 

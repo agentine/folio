@@ -73,6 +73,27 @@ describe('ZipWriter + ZipReader round-trip', () => {
     expect(reader.getEntries()).toHaveLength(0);
   });
 
+  it('rejects path traversal filenames', () => {
+    const writer = new ZipWriter();
+    writer.addFile('../etc/passwd', 'malicious');
+    const zip = writer.toBuffer();
+    expect(() => new ZipReader(zip)).toThrow('Unsafe ZIP entry: path traversal');
+  });
+
+  it('rejects absolute path filenames', () => {
+    const writer = new ZipWriter();
+    writer.addFile('/etc/hosts', 'malicious');
+    const zip = writer.toBuffer();
+    expect(() => new ZipReader(zip)).toThrow('Unsafe ZIP entry: absolute path');
+  });
+
+  it('rejects nested path traversal', () => {
+    const writer = new ZipWriter();
+    writer.addFile('xl/../../etc/passwd', 'malicious');
+    const zip = writer.toBuffer();
+    expect(() => new ZipReader(zip)).toThrow('Unsafe ZIP entry: path traversal');
+  });
+
   it('handles large compressible data', () => {
     const writer = new ZipWriter();
     const data = 'A'.repeat(100000);
