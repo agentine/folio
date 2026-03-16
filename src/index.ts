@@ -44,3 +44,6 @@ export type { XmlAttribute, SaxHandler } from './xml/index.js';
 
 export { StyleRegistry, isDateNumFmt, BUILTIN_NUMFMTS } from './style.js';
 export type { CellXf } from './style.js';
+
+export { SharedStrings } from './shared-strings.js';
+export type { SharedStringItem } from './shared-strings.js';
